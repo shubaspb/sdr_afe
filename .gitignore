@@ -23,7 +23,9 @@
 !*.mem
 !*.xdc
 !*.tcl
-
+!*.m
+!*.do
+!*.zip
 /project_2/*
 
 
