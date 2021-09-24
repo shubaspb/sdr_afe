@@ -30,7 +30,8 @@ module main
     input 	[7:0]	rxp_in,
     output 	[7:0]	txn_out,
     output 	[7:0]	txp_out,
-	input           reset_sw
+	input           reset_sw,
+	input 			if_sel
 	);
 
 
@@ -68,18 +69,18 @@ module main
       .IB(osc_n)
     ); 
 
-	wire clk_100;
+	wire clk_main_100;
 	wire pll_locked;	
  	pll_main pll_main_inst
 	 (
-	    .clk_out1 (clk_100),
+	    .clk_out1 (clk_main_100),
 	    .reset    (1'b0),
 	    .locked   (pll_locked),
 	    .clk_in1  (osc)
 	 ); 
 	 
     reg [19:0] cntx;
-    always @(posedge clk_100, negedge pll_locked)
+    always @(posedge clk_main_100, negedge pll_locked)
         if (!pll_locked) begin
                 cntx <= 20'd0;
         end else begin
@@ -231,58 +232,7 @@ module main
 	//wire [7:0] rx_state = tst2[7:0];
 	
 
-		
 
-    reg [31:0] cntt;
-    always @(posedge link_clk, negedge reset_b)
-        if (!reset_b) begin
-            cntt <= 32'd0;
-        end else begin
-            cntt <= cntt + 32'd1;        
-        end    	
-		
-
-	reg [15:0] rx_data_3_i_rg;
-	reg [15:0] rx_data_3_q_rg;	
-    always @(posedge link_clk, negedge reset_b)
-        if (!reset_b) begin 
-			rx_data_3_i_rg <= 16'd0; 
-			rx_data_3_q_rg <= 16'd0; 
-        end else begin
-			rx_data_3_i_rg <= rx_data_3_i + rx_data_1_i + rx_data_0_i + rx_data_2_i;
-			rx_data_3_q_rg <= rx_data_3_q + rx_data_1_q + rx_data_0_q + rx_data_2_q;   
-        end    		
-		
-		
-											
-
-/*     reg signed [15:0] s_i;
-    reg signed [15:0] s_q;
-    always @(posedge link_clk, negedge reset_b)
-        if (!reset_b) begin
-			{s_i, s_q} <=  {16'sd0  , 16'sd0 }; 
-        end else begin
-			case (cntt[3:0])
-				4'd0    : {s_i, s_q} <=  {16'sd16384  , 16'sd0     };
-				4'd1    : {s_i, s_q} <=  {16'sd15137  , 16'sd6270  };
-				4'd2    : {s_i, s_q} <=  {16'sd11585  , 16'sd11585 };
-				4'd3    : {s_i, s_q} <=  {16'sd6270   , 16'sd15137 };
-				4'd4    : {s_i, s_q} <=  {16'sd0      , 16'sd16384 };
-				4'd5    : {s_i, s_q} <=  {-16'sd6270  , 16'sd15137 };
-				4'd6    : {s_i, s_q} <=  {-16'sd11585 , 16'sd11585 };
-				4'd7    : {s_i, s_q} <=  {-16'sd15137 , 16'sd6270  };
-				4'd8    : {s_i, s_q} <=  {-16'sd16384 , 16'sd0     };
-				4'd9    : {s_i, s_q} <=  {-16'sd15137 , -16'sd6270 };
-				4'd10   : {s_i, s_q} <=  {-16'sd11585 , -16'sd11585};
-				4'd11   : {s_i, s_q} <=  {-16'sd6270  , -16'sd15137};
-				4'd12   : {s_i, s_q} <=  {16'sd0      , -16'sd16384};
-				4'd13   : {s_i, s_q} <=  {16'sd6270   , -16'sd15137};
-				4'd14   : {s_i, s_q} <=  {16'sd11585  , -16'sd11585};
-				4'd15   : {s_i, s_q} <=  {16'sd15137  , -16'sd6270 };
-                default : {s_i, s_q} <=  {16'sd0  , 16'sd0 };
-			endcase
-        end */
-		
 		
     wire signed [15:0] s_i_0;
     wire signed [15:0] s_q_0;
@@ -295,9 +245,9 @@ module main
         .clk            (link_clk), 
         .reset_b        (reset_b), 
         .start          (1'b1), 
-        .frequency      (32'd174762667), // 10
+        .frequency      (32'd1374389535), // +40    (32'd1030792151),  // 30     //
         .phase          (32'd0), 
-        .amplitude      (16'h4000), 
+        .amplitude      (16'h7000), 
         .real_sig       (s_i_0[15:0]),
         .imag_sig       (s_q_0[15:0])
         );  
@@ -314,13 +264,39 @@ module main
         .clk            (link_clk), 
         .reset_b        (reset_b), 
         .start          (1'b1), 
-        .frequency      (32'd87381334), // 5
+        .frequency      (32'd3607772529), // -20    (32'd240518167), //  7    (32'd687194767),   // 20     //
         .phase          (32'd0), 
-        .amplitude      (16'h2000), 
+        .amplitude      (16'h7000), 
         .real_sig       (s_i_1[15:0]),
         .imag_sig       (s_q_1[15:0])
         );  	
 		
+		
+	reg if_sel_reg0;
+	reg if_sel_reg1;
+    reg if_sel_posedge;	
+	always @(posedge link_clk, negedge reset_b)
+        if (!reset_b) begin
+			if_sel_reg0 <= 1'd0;
+			if_sel_reg1 <= 1'd0;
+			if_sel_posedge <= 1'd0;
+        end else begin	
+			if_sel_reg0 <= if_sel;
+			if_sel_reg1 <= if_sel_reg0;
+			if_sel_posedge <= (~if_sel_reg0) & if_sel;
+        end	
+	
+	reg [1:0] if_sel_fsm;	
+	always @(posedge link_clk, negedge reset_b)
+        if (!reset_b) begin
+			if_sel_fsm <= 2'd0;
+        end else begin	
+			if (if_sel_posedge)
+				if_sel_fsm <= if_sel_fsm + 2'd1;
+			else
+				if_sel_fsm <= if_sel_fsm;		
+        end	
+	
     reg signed [15:0] s_i;
     reg signed [15:0] s_q;	
 	always @(posedge link_clk, negedge reset_b)
@@ -328,17 +304,75 @@ module main
 			s_i <= 16'd0;
 	        s_q <= 16'd0;
         end else begin	
-			s_i <= s_i_0;// + s_i_1;
-	        s_q <= s_q_0;// + s_q_1;
+		    if (if_sel_fsm==2'd0)
+		        {s_i, s_q} <= {s_i_1, s_q_1}; 
+			else if (if_sel_fsm==2'd1)
+		        {s_i, s_q} <= {s_i_0, s_q_0}; 
+			else if (if_sel_fsm==2'd2)
+		        {s_i, s_q} <= {s_i_0, s_q_0}; 		
+			else
+		        {s_i, s_q} <= {s_i_1, s_q_1};
         end	 
 		
 		
 		
+
+	
+////////////////// DDC ///////////////////////////////////////////////////////////////////////
+	wire clk_125;
+    wire clk_25;
+    wire clk_100;
+    wire clk_20;
+    wire dsp_pll_locked;
+	clk_wiz_0 clk_wiz_0_inst(
+		.reset		(reset_pll_test),
+		.clk_in1 	(link_clk),
+		.clk_out1	(clk_125),
+		.clk_out2	(clk_25),
+		.clk_out3	(clk_100),
+		.clk_out4	(clk_20),
+		.locked		(dsp_pll_locked)
+	);
+
+///////////////////  RX 1030 ////////////////////////////////
+	wire [19:0] demod_1090_i;
+    wire [19:0] demod_1090_q;   
+    ddc_dmsp_125 ddc_dmsp_125_inst1(
+	    .link_clk  (link_clk    ),
+        .clk_125   (clk_125  	),  
+		.clk_25    (clk_25  	),
+		.clk_100   (clk_100 	),
+		.clk_20    (clk_20  	),
+        .reset_b   (dsp_pll_locked),       
+        .get_i     (s_q_1      	),
+        .get_q     (s_i_1      	),
+        .sig_in_i  (rx_data_0_i	),
+        .sig_in_q  (rx_data_0_q	),
+        .sig_out_i (demod_1090_i),
+        .sig_out_q (demod_1090_q)
+        );
+		
+    wire [23:0] sig_i_1090 = {demod_1090_i, 4'd0};
+    wire [23:0] sig_q_1090 = {demod_1090_q, 4'd0};
+    wire [23:0] mag_1090;
+	mag_complex mag_complex_inst1(
+		.reset_b	(reset_b	),
+		.clk		(clk_20		),
+		.sig_i		(sig_i_1090 ),
+		.sig_q		(sig_q_1090 ),
+		.magnitude  (mag_1090   )	
+    );   	
+/////////////////////////////////////////////////////////////////////////////////////////////
+	
+	
+
+	
+	
 		
 		
 
 
-											
+///////////////////// LA ////////////////////////////////////////////////////////////////									
     assign tx_data_0_i = s_i;
 	assign tx_data_0_q = s_q;
 	assign tx_data_1_i = s_i;
@@ -488,6 +522,29 @@ module main
 			rx_data_3_i_reg  <= rx_data_3_i_reg0; 
 			rx_data_3_q_reg  <= rx_data_3_q_reg0; 
         end
+		
+	reg [15:0] mag_1090_reg;    
+	reg [15:0] demod_1090_i_reg;
+	reg [15:0] demod_1090_q_reg;
+	reg [15:0] mag_1090_reg_0;    
+	reg [15:0] demod_1090_i_reg_0;
+	reg [15:0] demod_1090_q_reg_0;
+	always @(posedge clk_20, negedge reset_b)
+        if (!reset_b) begin
+			mag_1090_reg     <= 16'd0;
+			demod_1090_i_reg <= 16'd0; 
+			demod_1090_q_reg <= 16'd0; 
+			mag_1090_reg_0     <= 16'd0;
+			demod_1090_i_reg_0 <= 16'd0; 
+			demod_1090_q_reg_0 <= 16'd0; 
+        end else begin	
+			mag_1090_reg_0     <= mag_1090[22:7];
+			demod_1090_i_reg_0 <= demod_1090_i[18:3]; 
+			demod_1090_q_reg_0 <= demod_1090_q[18:3]; 
+			mag_1090_reg     <= mag_1090_reg_0;    
+			demod_1090_i_reg <= demod_1090_i_reg_0; 
+			demod_1090_q_reg <= demod_1090_q_reg_0; 	
+        end	 
 	
 	
 	
@@ -496,43 +553,40 @@ module main
 	wire [5:0] adc_sync_b_rx = tst1[15:10]; 
 	wire trig_in = rst_ctl_clk;  
 	wire trig_in_ack;
-	wire [15:0] probe0  = 16'd0;     
-	wire [15:0] probe1  = {rx_datak[3:0], rx_state[3:0], gt4_rxdisperr[3:0], rx_sync_reg, tx_sync_reg, sysref_reg, rst_ctl_clk};  //
-	wire [15:0] probe2  = rx_data_0_i_reg;     
-	wire [15:0] probe3  = rx_data_0_q_reg;     
-	wire [15:0] probe4  = rx_data_1_i_reg; 
-	wire [15:0] probe5  = rx_data_1_q_reg; 	
-	wire [15:0] probe6  = rx_data_2_i_reg;  	
-	wire [15:0] probe7  = rx_data_2_q_reg;  	
-	wire [15:0] probe8  = rx_data_3_i_reg;     
-	wire [15:0] probe9  = rx_data_3_q_reg;     
-	wire [15:0] probe10 = orx_data_0_i_reg; 
-	wire [15:0] probe11 = orx_data_0_q_reg; 	
-	wire [15:0] probe12 = orx_data_1_i_reg;  	
-	wire [15:0] probe13 = orx_data_1_q_reg;  
-	
+	wire [15:0] probe0  = mag_1090_reg; 	// 16'd0;     
+	wire [15:0] probe1  = demod_1090_i_reg; // {rx_datak[3:0], rx_state[3:0], gt4_rxdisperr[3:0], rx_sync_reg, tx_sync_reg, sysref_reg, rst_ctl_clk};  //
+	wire [15:0] probe2  = demod_1090_q_reg; // rx_data_0_i_reg;     
+	wire [15:0] probe3  = {rx_datak[3:0], rx_state[3:0], align_mux[1:0], 2'd0, rx_sync_reg, tx_sync_reg, sysref_reg, rst_ctl_clk};  // rx_data_0_q_reg;     
+	wire [15:0] probe4  = rx_data[15:0]; // rx_data_1_i_reg; 
+	wire [15:0] probe5  = 16'd0; // rx_data_1_q_reg; 	
+	wire [15:0] probe6  = 16'd0; // rx_data_2_i_reg;  	
+	wire [15:0] probe7  = 16'd0; // rx_data_2_q_reg;  	
+	wire [15:0] probe8  = 16'd0; // rx_data_3_i_reg;     
+	wire [15:0] probe9  = 16'd0; // rx_data_3_q_reg;     
+	wire [15:0] probe10 = 16'd0; // orx_data_0_i_reg; 
+	wire [15:0] probe11 = 16'd0; // orx_data_0_q_reg;  
+	wire [15:0] probe12 = 16'd0; // orx_data_1_i_reg;  
+	wire [15:0] probe13 = 16'd0; // orx_data_1_q_reg;  
 
-		
-	ila_0 ila_0_inst(
-		.clk		(link_clk),  //(osc), //
-		.trig_in	(trig_in	),
-		.trig_in_ack(trig_in_ack),
-		.probe0		(probe0		),
-		.probe1		(probe1		),
-		.probe2		(probe2		),
-		.probe3     (probe3     ),
-		.probe4		(probe4		),
-		.probe5		(probe5		),
-		.probe6		(probe6		),
-		.probe7     (probe7     ),
-		.probe8		(probe8		),
-		.probe9		(probe9		),
-		.probe10	(probe10	),
-		.probe11    (probe11    ),
-		.probe12	(probe12	),
-		.probe13	(probe13	)
-	);
 	
+	
+	ila_0 ila_0_inst(
+		.clk		(clk_20 ), 
+		.trig_in	(trig_in),
+		.probe0		(probe0	),
+		.probe1		(probe1	),
+		.probe2		(probe2	),
+		.probe3		(probe3	),
+		.probe4		(probe4	),
+		.probe5		(probe5	),
+		.probe6		(probe6	),
+		.probe7     (probe7 ),
+		.probe8		(probe8	),
+		.probe9		(probe9	),
+		.probe10	(probe10),
+		.probe11    (probe11)
+	);
+
 		
 
 		

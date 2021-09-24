@@ -471,10 +471,7 @@ module jesd204b_8lane
 		.rx_reset_done	(rx_reset_done	),
 		.gt_powergood	(gt_powergood	),
 		
-		.qpll1_refclk	(devclk),
-		.common0_qpll1_lock_out   (common0_qpll1_lock_out  ),
-		.common0_qpll1_refclk_out (common0_qpll1_refclk_out),
-		.common0_qpll1_clk_out    (common0_qpll1_clk_out   ),	
+		.cpll_refclk	(devclk),
 		
 		.rxencommaalign (rxencommaalign),
 		.tx_core_clk	(tx_core_clk),
