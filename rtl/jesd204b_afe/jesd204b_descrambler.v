@@ -39,13 +39,13 @@ assign d_out = d_out_reg;
 
 
 always @(posedge clk, negedge reset_b)
-	if(~reset_b)
+    if(~reset_b)
         scrambler15 <= 15'h7f80;
     else
         scrambler15 <= s_d_in[14:0];
 
 always @(posedge clk, negedge reset_b)
-	if(~reset_b)
+    if(~reset_b)
         d_out_reg <= 32'h0;
     else begin
         d_out_reg[31] <= s_d_in[31] ^ scrambler15[14] ^ scrambler15[13];

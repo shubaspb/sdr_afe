@@ -237,7 +237,7 @@ always @(posedge link_clk, negedge link_reset_b)
         endcase
 
 always @(posedge link_clk, negedge link_reset_b)
-	if(!link_reset_b)
+    if(!link_reset_b)
         prbs7_checker <= 32'h0;
     else begin
         prbs7_checker[0] <= prbs7_reg[6];
@@ -275,7 +275,7 @@ always @(posedge link_clk, negedge link_reset_b)
     end
 
 always @(posedge link_clk, negedge link_reset_b)
-	if(!link_reset_b)
+    if(!link_reset_b)
         rx_parallel_data_ff0 <= 32'h0;
     else
         rx_parallel_data_ff0 <= rx_parallel_data;
@@ -321,9 +321,9 @@ jesd204b_prbs_debug_fifo jesd204b_prbs_debug_fifo_inst0
 (
     .aclr       (~link_reset_b),
 
-	.wrclk      (link_clk),
+    .wrclk      (link_clk),
     .wrusedw    (wrusedw),
-	.wrfull     (wrfull),
+    .wrfull     (wrfull),
     .wrempty    (wrempty),
     .wrreq      (wrreq),
     .data       ({pattern_detect, rx_parallel_data_ff0, prbs7_checker[27:0]}),
@@ -333,7 +333,7 @@ jesd204b_prbs_debug_fifo jesd204b_prbs_debug_fifo_inst0
     .rdfull     (rdfull),
     .rdempty    (rdempty),
     .rdreq      (rdreq),
-	.q          ({debug_pattern_detect, debug_rx_parallel_data_ff0, debug_prbs7_checker})
+    .q          ({debug_pattern_detect, debug_rx_parallel_data_ff0, debug_prbs7_checker})
 );
 
 

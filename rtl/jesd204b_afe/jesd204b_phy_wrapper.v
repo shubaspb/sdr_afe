@@ -337,8 +337,8 @@ assign tst_wrapper0 =
 assign tst_wrapper2 =
 {
     link_clk,
-	link_clk,
-	8'd0,
+    link_clk,
+    8'd0,
     tx_digitalreset[3:0],
     tx_analogreset[3:0],
     rx_digitalreset[8:0],
@@ -353,9 +353,9 @@ assign tst_wrapper2 =
 assign tst_wrapper3 =
 {
     link_clk,
-	3'd0,
-	rx_parallel_data_0[31:0],
-	rx_parallel_data_1[31:0]
+    3'd0,
+    rx_parallel_data_0[31:0],
+    rx_parallel_data_1[31:0]
 };
 
 
