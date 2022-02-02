@@ -15,28 +15,19 @@
     Ревизия             : 1.0 - 2018.04.26
 */
 
-
 `timescale 1ns / 1ns
-
 
 module jesd204b_descrambler
 (
     input         reset_b,
     input         clk,
-
     input  [31:0] s_d_in,
-
     output [31:0] d_out
 );
 
-
 reg [31:0] d_out_reg;
-
 reg [14:0] scrambler15;
-
-
 assign d_out = d_out_reg;
-
 
 always @(posedge clk, negedge reset_b)
     if(~reset_b)

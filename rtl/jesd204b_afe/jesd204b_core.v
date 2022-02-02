@@ -212,8 +212,6 @@ jesd204b_phy_wrapper jesd204b_phy_wrapper_inst
 );
 //////////////////////////////////////////////////////////////////////////
 
-
-
 //////////// loopback ////////////////////////////////////////////////
 always @ (posedge link_clk, negedge reset_b)
     if(~reset_b) begin
@@ -232,10 +230,6 @@ always @ (posedge link_clk, negedge reset_b)
 assign  bus_link_layer_tx0 = {tx_parallel_data0, tx_datak0};
 assign  bus_link_layer_tx1 = {tx_parallel_data1, tx_datak1};
 /////////////////////////////////////////////////////////////////////////    
-    
-    
-    
-
 
 ////////////// PHY ready //////////////////////////////////////////////////////
 jesd204b_rst_ctl jesd204b_rst_ctl_inst

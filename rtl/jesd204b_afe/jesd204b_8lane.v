@@ -87,9 +87,9 @@ wire [31:0] tx_parallel_data2;
 wire [31:0] tx_parallel_data3;
 
 wire [3:0]  tx_datak0;
-wire [3:0]  tx_datak1;    
+wire [3:0]  tx_datak1;
 wire [3:0]  tx_datak2;
-wire [3:0]  tx_datak3;        
+wire [3:0]  tx_datak3;
 
 wire [7:0] state_out0;
 wire [7:0] state_out1;
@@ -196,13 +196,13 @@ assign adc_sync_b = adc_sync_b_rx[0] & adc_sync_b_rx[1] & adc_sync_b_rx[2] & adc
 
 jesd204b_rx jesd204b_rx_inst0
 (
-    .reset_b            (reset_b_0            ),
-    .clk                (link_clk            ),
+    .reset_b            (reset_b_0          ),
+    .clk                (link_clk           ),
     .sysref             (sysref_sync        ),
-    .adc_sync_b         (adc_sync_b_rx[0]    ),
+    .adc_sync_b         (adc_sync_b_rx[0]   ),
     .scrambler_is_on    (scrambler_is_on    ),
-    .rx_parallel_data   (rx_parallel_data0    ),
-    .rx_datak           (rx_datak0            ),
+    .rx_parallel_data   (rx_parallel_data0  ),
+    .rx_datak           (rx_datak0          ),
     .rx_data_i          (rx_data_0_i        ),
     .rx_data_q          (rx_data_0_q        ),
     .pattern_align_en   (pattern_align_en[0]),
@@ -210,53 +210,53 @@ jesd204b_rx jesd204b_rx_inst0
     .err_link_rx        (err_link_rx0)
 );
 
-    jesd204b_rx jesd204b_rx_inst1
-    (
-        .reset_b            (reset_b_0            ),
-        .clk                (link_clk            ),
-        .sysref             (sysref_sync        ),
-        .adc_sync_b         (adc_sync_b_rx[1]    ),
-        .scrambler_is_on    (scrambler_is_on    ),
-        .rx_parallel_data   (rx_parallel_data1    ),
-        .rx_datak           (rx_datak1            ),
-        .rx_data_i          (rx_data_1_i           ),
-        .rx_data_q          (rx_data_1_q           ),
-        .pattern_align_en   (pattern_align_en[1]),
-        .usedw              (usedw1),
-        .err_link_rx        (err_link_rx1)
-    );
+jesd204b_rx jesd204b_rx_inst1
+(
+    .reset_b            (reset_b_0           ),
+    .clk                (link_clk            ),
+    .sysref             (sysref_sync         ),
+    .adc_sync_b         (adc_sync_b_rx[1]    ),
+    .scrambler_is_on    (scrambler_is_on     ),
+    .rx_parallel_data   (rx_parallel_data1   ),
+    .rx_datak           (rx_datak1           ),
+    .rx_data_i          (rx_data_1_i         ),
+    .rx_data_q          (rx_data_1_q         ),
+    .pattern_align_en   (pattern_align_en[1]),
+    .usedw              (usedw1),
+    .err_link_rx        (err_link_rx1)
+);
 
-    jesd204b_rx jesd204b_rx_inst2
-    (
-        .reset_b            (reset_b_0            ),
-        .clk                (link_clk            ),
-        .sysref             (sysref_sync        ),
-        .adc_sync_b         (adc_sync_b_rx[2]    ),
-        .scrambler_is_on    (scrambler_is_on    ),
-        .rx_parallel_data   (rx_parallel_data2    ),
-        .rx_datak           (rx_datak2            ),
-        .rx_data_i          (rx_data_2_i        ),
-        .rx_data_q          (rx_data_2_q        ),
-        .pattern_align_en   (pattern_align_en[2]),
-        .usedw              (usedw2),
-        .err_link_rx        (err_link_rx2)
-    );
+jesd204b_rx jesd204b_rx_inst2
+(
+    .reset_b            (reset_b_0           ),
+    .clk                (link_clk            ),
+    .sysref             (sysref_sync         ),
+    .adc_sync_b         (adc_sync_b_rx[2]    ),
+    .scrambler_is_on    (scrambler_is_on     ),
+    .rx_parallel_data   (rx_parallel_data2   ),
+    .rx_datak           (rx_datak2           ),
+    .rx_data_i          (rx_data_2_i         ),
+    .rx_data_q          (rx_data_2_q         ),
+    .pattern_align_en   (pattern_align_en[2] ),
+    .usedw              (usedw2),
+    .err_link_rx        (err_link_rx2)
+);
 
-    jesd204b_rx jesd204b_rx_inst3
-    (
-        .reset_b            (reset_b_0            ),
-        .clk                (link_clk            ),
-        .sysref             (sysref_sync        ),
-        .adc_sync_b         (adc_sync_b_rx[3]    ),
-        .scrambler_is_on    (scrambler_is_on    ),
-        .rx_parallel_data   (rx_parallel_data3    ),
-        .rx_datak           (rx_datak3            ),
-        .rx_data_i          (rx_data_3_i           ),
-        .rx_data_q          (rx_data_3_q           ),
-        .pattern_align_en   (pattern_align_en[3]),
-        .usedw              (usedw3),
-        .err_link_rx        (err_link_rx3)
-    );
+jesd204b_rx jesd204b_rx_inst3
+(
+    .reset_b            (reset_b_0           ),
+    .clk                (link_clk            ),
+    .sysref             (sysref_sync         ),
+    .adc_sync_b         (adc_sync_b_rx[3]    ),
+    .scrambler_is_on    (scrambler_is_on     ),
+    .rx_parallel_data   (rx_parallel_data3   ),
+    .rx_datak           (rx_datak3           ),
+    .rx_data_i          (rx_data_3_i         ),
+    .rx_data_q          (rx_data_3_q         ),
+    .pattern_align_en   (pattern_align_en[3] ),
+    .usedw              (usedw3),
+    .err_link_rx        (err_link_rx3)
+);
 //////////////////////////////////////////////////////////////////////////
 
 
@@ -264,13 +264,13 @@ jesd204b_rx jesd204b_rx_inst0
 /////////////////////// ORX ////////////////////////////////////////////////
 jesd204b_rx jesd204b_rx_inst4
 (
-    .reset_b            (reset_b_0            ),
+    .reset_b            (reset_b_0           ),
     .clk                (link_clk            ),
-    .sysref             (sysref_sync        ),
+    .sysref             (sysref_sync         ),
     .adc_sync_b         (adc_sync_b_rx[4]    ),
-    .scrambler_is_on    (scrambler_is_on    ),
-    .rx_parallel_data   (rx_parallel_data4    ),
-    .rx_datak           (rx_datak4            ),
+    .scrambler_is_on    (scrambler_is_on     ),
+    .rx_parallel_data   (rx_parallel_data4   ),
+    .rx_datak           (rx_datak4           ),
     .rx_data_i          (orx_data_0_i        ),
     .rx_data_q          (orx_data_0_q        ),
     .pattern_align_en   (pattern_align_en[4]),
@@ -281,13 +281,13 @@ jesd204b_rx jesd204b_rx_inst4
 
 jesd204b_rx jesd204b_rx_inst5
 (
-    .reset_b            (reset_b_0            ),
+    .reset_b            (reset_b_0           ),
     .clk                (link_clk            ),
-    .sysref             (sysref_sync        ),
+    .sysref             (sysref_sync         ),
     .adc_sync_b         (adc_sync_b_rx[5]    ),
-    .scrambler_is_on    (scrambler_is_on    ),
-    .rx_parallel_data   (rx_parallel_data5    ),
-    .rx_datak           (rx_datak5            ),
+    .scrambler_is_on    (scrambler_is_on     ),
+    .rx_parallel_data   (rx_parallel_data5   ),
+    .rx_datak           (rx_datak5           ),
     .rx_data_i          (        ),
     .rx_data_q          (        ),
     .pattern_align_en   (pattern_align_en[5]),
@@ -298,13 +298,13 @@ jesd204b_rx jesd204b_rx_inst5
 
 jesd204b_rx jesd204b_rx_inst6
 (
-    .reset_b            (reset_b_0            ),
+    .reset_b            (reset_b_0           ),
     .clk                (link_clk            ),
-    .sysref             (sysref_sync        ),
+    .sysref             (sysref_sync         ),
     .adc_sync_b         (adc_sync_b_rx[6]    ),
-    .scrambler_is_on    (scrambler_is_on    ),
-    .rx_parallel_data   (rx_parallel_data6    ),
-    .rx_datak           (rx_datak6            ),
+    .scrambler_is_on    (scrambler_is_on     ),
+    .rx_parallel_data   (rx_parallel_data6   ),
+    .rx_datak           (rx_datak6           ),
     .rx_data_i          (orx_data_1_i        ),
     .rx_data_q          (orx_data_1_q        ),
     .pattern_align_en   (pattern_align_en[6]),
@@ -315,13 +315,13 @@ jesd204b_rx jesd204b_rx_inst6
 
 jesd204b_rx jesd204b_rx_inst7
 (
-    .reset_b            (reset_b_0            ),
+    .reset_b            (reset_b_0           ),
     .clk                (link_clk            ),
-    .sysref             (sysref_sync        ),
+    .sysref             (sysref_sync         ),
     .adc_sync_b         (adc_sync_b_rx[7]    ),
-    .scrambler_is_on    (scrambler_is_on    ),
-    .rx_parallel_data   (rx_parallel_data7    ),
-    .rx_datak           (rx_datak7            ),
+    .scrambler_is_on    (scrambler_is_on     ),
+    .rx_parallel_data   (rx_parallel_data7   ),
+    .rx_datak           (rx_datak7           ),
     .rx_data_i          (        ),
     .rx_data_q          (        ),
     .pattern_align_en   (pattern_align_en[7]),

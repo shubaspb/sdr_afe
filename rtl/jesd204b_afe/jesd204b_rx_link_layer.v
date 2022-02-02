@@ -135,35 +135,29 @@ always @(*) begin
     case (state)
         IDLE :
             next_state = CGS;
-
         CGS :
             if ((rx_dat == CGS_WORD) && (rx_datak == 4'hf))
                 next_state = WAIT_ALIGN;
             else
                 next_state = CGS;
-
         WAIT_ALIGN :
             if (((rx_dat[31:24] == R_WORD) && (rx_datak[3] == 1'b1))
-            || ((rx_dat[23:16] == R_WORD)  && (rx_datak[2] == 1'b1))
+            || ((rx_dat[23:16] == R_WORD) && (rx_datak[2] == 1'b1))
             || ((rx_dat[15:8] == R_WORD) && (rx_datak[1] == 1'b1))
             || ((rx_dat[7:0] == R_WORD) && (rx_datak[0] == 1'b1)))
                 next_state = ALIGN;
             else
                 next_state = WAIT_ALIGN;
-
         ALIGN : next_state = ILAS;
-
         ILAS :
             if ((cnt_fc == K_PARAM) && (cnt_lmfc == 8'd4))
                 next_state = USER_DATA;
             else
                 next_state = ILAS;
-
         USER_DATA : next_state = USER_DATA;
-
     endcase
 end
-    
+
 
 // последовательные выходны FSM
 always @(posedge clk, negedge reset_b)
@@ -171,7 +165,7 @@ always @(posedge clk, negedge reset_b)
         adc_data0_reg <= 16'h0;
         adc_data1_reg <= 16'h0;
         data_ready_reg <= 1'b0;
-    end else
+    end else begin
         case (next_state)
             IDLE : begin
                 adc_data0_reg <= 16'h0;
@@ -192,11 +186,14 @@ always @(posedge clk, negedge reset_b)
                         adc_data1_reg <= {rx_dat_opt[15:8], A_WORD};
                     else if (rx_dat_opt[7:0] == F_WORD)
                         adc_data1_reg <= {rx_dat_opt[15:8], F_WORD};
-                end else
+                end else begin
                         adc_data1_reg <= rx_dat_opt[15:0];
+                end
             end
 
         endcase
+    end
+
 
 // последовательные выходны FSM
 always @(posedge clk, negedge reset_b)
@@ -206,7 +203,7 @@ always @(posedge clk, negedge reset_b)
         cnt_fc_rst <= 1'b1;
         cnt_lmfc_en <= 1'b0;
         cnt_lmfc_rst <= 1'b1;
-    end else
+    end else begin
         case (next_state)
             IDLE : begin
                 pattern_align_en_reg <= 1'b1;
@@ -222,7 +219,7 @@ always @(posedge clk, negedge reset_b)
                 cnt_lmfc_en <= 1'b0;
                 cnt_lmfc_rst <= 1'b0;
             end
-            ILAS :
+            ILAS : begin
                 if (cnt_fc == K_PARAM_M1) begin
                     cnt_fc_rst <= 1'b1;
                     cnt_lmfc_en <= 1'b1;
@@ -230,6 +227,7 @@ always @(posedge clk, negedge reset_b)
                     cnt_fc_rst <= 1'b0;
                     cnt_lmfc_en <= 1'b0;
                 end
+            end
             USER_DATA : begin
                 if (cnt_fc == K_PARAM_M1) begin
                     cnt_fc_rst <= 1'b1;
@@ -241,25 +239,26 @@ always @(posedge clk, negedge reset_b)
             end
 
         endcase
+    end
 
 
 // последовательные выходны FSM
 always @(posedge clk, negedge reset_b)
     if(!reset_b) begin
         sync_b_reg <= 1'b1;
-    end else
+    end else begin
         case (next_state)
             IDLE         : sync_b_reg <= 1'b1;
             CGS         : sync_b_reg <= 1'b0;
             WAIT_ALIGN     : sync_b_reg <= 1'b1;
         endcase    
+    end
 
-        
 // последовательные выходны FSM
 always @(posedge clk, negedge reset_b)
     if(!reset_b) begin
         align_mux <= 2'h0;
-    end else
+    end else begin
         case (next_state)
             IDLE : align_mux <= 2'h0;
             ALIGN : begin
@@ -272,10 +271,10 @@ always @(posedge clk, negedge reset_b)
                 else if (rx_dat[7:0] == R_WORD)
                     align_mux <= 2'h3;
                 else
-                    align_mux <= 2'h0;                
+                    align_mux <= 2'h0;
             end
-        endcase     
-        
+        endcase
+    end
 
     always @(*)
         case (align_mux)
@@ -293,9 +292,8 @@ always @(posedge clk, negedge reset_b)
             2'h2     : rx_datak_opt = {rx_datak_ff0[1], rx_datak_ff0[2], rx_datak_ff0[3],   rx_datak[0]    };
             3'h3     : rx_datak_opt = {rx_datak_ff0[0], rx_datak_ff0[1], rx_datak_ff0[2],   rx_datak_ff0[3]};
             default : rx_datak_opt = 4'd0;
-        endcase    
+        endcase
 
-    
 always @(posedge clk, negedge reset_b)
 if (!reset_b) begin
     rx_dat_ff0 <= 32'h0;
@@ -325,8 +323,8 @@ else
     else if (cnt_lmfc_en)
         cnt_lmfc <= cnt_lmfc + 8'h1;
 
-        
-////////////////// check  replacement ////////////////////////////////////    
+
+////////////////// check  replacement ////////////////////////////////////
 reg [31:0] errors_link;
 wire flag_multi = (rx_dat_opt[7:0]==A_WORD) & rx_datak_opt[0];
 always @(posedge clk, negedge reset_b)
@@ -335,22 +333,21 @@ always @(posedge clk, negedge reset_b)
     end else begin
         if (flag_multi) begin
             if (cnt_fc==K_PARAM)
-                errors_link <= errors_link;    
+                errors_link <= errors_link;
             else
                 errors_link <= errors_link + ~&errors_link;
-        end else
-            errors_link <= errors_link;        
+        end else begin
+            errors_link <= errors_link;
+        end
     end
-///////////////////////////////////////////////////////////////            
+////////////////////////////////////////////////////////////////////////
 
 
 jesd204b_descrambler jesd204b_descrambler_inst0
 (
     .reset_b    (reset_b),
     .clk        (clk),
-
     .s_d_in     ({adc_data0_reg, adc_data1_reg}),
-
     .d_out      ({descrambled_adc0, descrambled_adc1})
 );
 

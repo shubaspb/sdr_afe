@@ -3,18 +3,13 @@ module jesd204b_scrambler
 (
     input         reset_b,
     input         clk,
-
     input  [31:0] d_in,
-
     output [31:0] s_d_out
 );
 
-
 reg [31:0] d_out_reg;
-
 reg [14:0] scrambler15;
 reg [16:0] scrambler15_msb;
-
 
 assign s_d_out[31] = scrambler15_msb[16];
 assign s_d_out[30] = scrambler15_msb[15];
@@ -48,7 +43,6 @@ assign s_d_out[3]  = scrambler15[3];
 assign s_d_out[2]  = scrambler15[2];
 assign s_d_out[1]  = scrambler15[1];
 assign s_d_out[0]  = scrambler15[0];
-
 
 always @(posedge clk, negedge reset_b)
     if(~reset_b)

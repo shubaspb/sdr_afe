@@ -1,19 +1,19 @@
 
 module jesd204b_rx
 (
-    input             reset_b,
-    input             clk,
-    input             sysref,
-    output            adc_sync_b,
-    input             scrambler_is_on,
+    input           reset_b,
+    input           clk,
+    input           sysref,
+    output          adc_sync_b,
+    input           scrambler_is_on,
     input   [31:0]  rx_parallel_data,
-    input   [3:0]     rx_datak,
-    output     [15:0]     rx_data_i,
-    output     [15:0]     rx_data_q,
-    output             pattern_align_en,
+    input   [3:0]   rx_datak,
+    output  [15:0]  rx_data_i,
+    output  [15:0]  rx_data_q,
+    output          pattern_align_en,
     output  [9:0]   usedw,
     output  [31:0]  err_link_rx,
-    output  [67:0]    tst
+    output  [67:0]  tst
 );
 
 

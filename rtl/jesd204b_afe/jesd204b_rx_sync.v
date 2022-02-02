@@ -3,14 +3,11 @@ module jesd204b_rx_sync
 (
     input  reset_b,
     input  clk,
-
     input [3:0] sync_b_i,
     output reg [3:0] sync_b_o,
-
     input  sysref_i,
     output reg sysref_o
 );
-
 
 reg sysref_ff0, sysref_ff1;
 reg [3:0] sync_b_ff0, sync_b_ff1;
@@ -23,7 +20,7 @@ always @(negedge clk, negedge reset_b)
         {sysref_ff1, sysref_ff0} <= {sysref_ff0, sysref_i};
         {sync_b_ff1, sync_b_ff0} <= {sync_b_ff0, sync_b_i};
     end
-    
+
 always @(posedge clk, negedge reset_b)
     if (!reset_b) begin
         sync_b_o <= 4'b0;

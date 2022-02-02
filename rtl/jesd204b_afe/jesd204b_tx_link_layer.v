@@ -83,63 +83,51 @@ always @(posedge clk, negedge reset_b)
 always @(*) begin
     next_state = IDLE;
     case (state)
-
-        IDLE :  
+        IDLE :
             if (sysref_edge)
                 next_state = WAIT_SYNC_B;
-
         WAIT_SYNC_B :
             if (sync_b == 1'b0)
                 next_state = CGS0;
             else
                 next_state = WAIT_SYNC_B;
-
         CGS0 :
             if (sync_b == 1'b1)
                 next_state = CGS1;
             else
                 next_state = CGS0;
-                
         CGS1 :
             if (cnt_fc == K_PARAM)
                 next_state = ILAS1;
             else
                 next_state = CGS1;
-
         ILAS1 :
             if (cnt_fc == K_PARAM)
                 next_state = ILAS2;
             else
                 next_state = ILAS1;
-
         ILAS2 :
             if (cnt_fc == K_PARAM)
                 next_state = ILAS3;
             else
                 next_state = ILAS2;
-
         ILAS3 :
             if (cnt_fc == K_PARAM)
                 next_state = ILAS4;
             else
                 next_state = ILAS3;
-
         ILAS4 :
             if (cnt_fc == K_PARAM)
                 next_state = TAIL1;
             else
                 next_state = ILAS4;
-                
         TAIL1 : next_state = TAIL2;
-        
         TAIL2 : next_state = USER_DATA;
-
         USER_DATA :
             if (sync_b == 1'b0)
                 next_state = CGS0;
             else
                 next_state = USER_DATA;
-
     endcase
 end
 
@@ -187,7 +175,7 @@ reg [3:0] tx_ak;
 always @(posedge clk, negedge reset_b)
     if(!reset_b) begin
         {tx_data, tx_ak} <= {R_WORD, R_WORD, R_WORD, R_WORD, 4'hf};
-    end else
+    end else begin
         case (next_state)
             IDLE            :   {tx_data, tx_ak} <= {R_WORD, R_WORD, R_WORD, R_WORD, 4'hf};
             WAIT_SYNC_B     :   {tx_data, tx_ak} <= {R_WORD, R_WORD, R_WORD, R_WORD, 4'hf};
@@ -279,14 +267,14 @@ always @(posedge clk, negedge reset_b)
                 case (cnt_fc)
                     K_PARAM_M1 : begin  if      (flag_replace)   {tx_data, tx_ak} <= {data_scr[31:8], A_WORD, 4'h1};
                                         else if (flag_a_word)    {tx_data, tx_ak} <= {data_scr[31:8], A_WORD, 4'h1};
-                                        else                     {tx_data, tx_ak} <= {data_scr[31:0], 4'h0};            end
+                                        else                     {tx_data, tx_ak} <= {data_scr[31:0], 4'h0}; end
                     default :    begin  if      (flag_replace)   {tx_data, tx_ak} <= {data_scr[31:8], F_WORD, 4'h1};
                                         else if (flag_f_word)    {tx_data, tx_ak} <= {data_scr[31:8], F_WORD, 4'h1};
-                                        else                     {tx_data, tx_ak} <= {data_scr[31:0], 4'h0};            end
+                                        else                     {tx_data, tx_ak} <= {data_scr[31:0], 4'h0}; end
                 endcase
 
         endcase
-
+    end
 
 
 // последовательные выходны FSM
